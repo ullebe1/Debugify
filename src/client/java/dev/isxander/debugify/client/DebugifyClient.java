@@ -8,16 +8,8 @@ public class DebugifyClient {
 
     public static void onInitializeClient() {
         bugFixDescriptionCache = new BugFixDescriptionCache();
-
-        if (Debugify.configWasDirty) {
-            Debugify.LOGGER.info("Re-caching descriptions because json doesn't match config.");
-            bugFixDescriptionCache.cacheDescriptions();
-        } else {
-            if (!bugFixDescriptionCache.load()) {
-                Debugify.LOGGER.info("Failed to load descriptions, re-caching.");
-                bugFixDescriptionCache.cacheDescriptions();
-            }
-        }
+        bugFixDescriptionCache.loadDescriptions();
+        bugFixDescriptionCache.cacheMissingDescriptions();
     }
 
     public static boolean isGameplayFixesEnabled() {

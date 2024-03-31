@@ -5,18 +5,20 @@ import dev.isxander.debugify.fixes.BugFixData;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
-import java.net.ConnectException;
-import java.net.NetworkInterface;
+
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class BugFixDescriptionCache {
@@ -25,57 +27,67 @@ public class BugFixDescriptionCache {
     private final Map<String, String> descriptionHolder = new HashMap<>();
     private final String url = "https://bugs.mojang.com/rest/api/2/issue/%s";
 
-    public void cacheDescriptions() {
-        Debugify.LOGGER.info("Connecting to 'bugs.mojang.com' to cache bug descriptions!");
+    public boolean loadDescriptions() {
+        if (Files.notExists(file)) {
+            return false;
+        }
 
-        CompletableFuture.runAsync(() -> {
-            HttpClient client = HttpClient.newHttpClient();
+        try {
+            String json = Files.readString(file);
+            gson.fromJson(json, JsonObject.class)
+                    .entrySet()
+                    .forEach(entry ->
+                            descriptionHolder.put(entry.getKey(), entry.getValue().getAsString()));
 
-            boolean givenUp = false;
-            for (BugFixData bugData : Debugify.CONFIG.getBugFixes().keySet()) {
-                String id = bugData.bugId();
-                int attempts = 0;
-                boolean success = true;
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-                do {
-                    try {
-                        if (attempts >= 2) {
-                            Debugify.LOGGER.error("Giving up trying to cache bug descriptions. Consecutive network failures.");
-                            givenUp = true;
-                            break;
-                        }
-                        attempts++;
+    public void cacheMissingDescriptions() {
+        ExecutorService executor = Executors.newFixedThreadPool(4, r -> new Thread(r, "Debugify Description Cache"));
+        HttpClient client = HttpClient.newHttpClient();
 
-                        HttpRequest request = HttpRequest.newBuilder(new URI(String.format(url, id)))
-                                .build();
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        for (BugFixData bugFix : Debugify.CONFIG.getBugFixes().keySet()) {
+            String id = bugFix.bugId();
+            if (descriptionHolder.containsKey(id)) continue;
 
-                        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            Debugify.LOGGER.info("Caching description for bug {}", id);
 
-                        if (response.statusCode() != 200) {
-                            Debugify.LOGGER.error("Description Cache: {} - {}", response.statusCode(), response.body());
-                            continue;
-                        }
+            futures.add(CompletableFuture.runAsync(() -> cacheBugDescription(client, id), executor));
+        }
 
-                        JsonObject json = gson.fromJson(response.body(), JsonObject.class);
-                        JsonObject fields = json.getAsJsonObject("fields");
-                        String summary = fields.get("summary").getAsString();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenRun(() -> {
+                    save();
+                    executor.shutdown();
+                });
+    }
 
-                        descriptionHolder.put(id, summary);
+    private void cacheBugDescription(HttpClient client, String bugId) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder(new URI(String.format(url, bugId)))
+                    .setHeader("User-Agent", "Debugify/%s mod https://github.com/isXander/Debugify/blob/1.20/src/client/java/dev/isxander/debugify/client/utils/BugFixDescriptionCache.java".formatted(Debugify.VERSION.getFriendlyString()))
+                    .build();
 
-                        success = true;
-                    } catch (ConnectException e) {
-                        Debugify.LOGGER.error("Couldn't connect to `bugs.mojang.com`", e);
-                        success = false;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        success = false;
-                    }
-                } while (!success);
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                if (givenUp)
-                    break;
+            if (response.statusCode() != 200) {
+                Debugify.LOGGER.error("Description Cache fail: HTTP status {} - {}", response.statusCode(), response.body());
+                return;
             }
-        }).thenAccept((returnVal) -> save());
+
+            JsonObject json = gson.fromJson(response.body(), JsonObject.class);
+            JsonObject fields = json.getAsJsonObject("fields");
+            String summary = fields.get("summary").getAsString();
+
+            descriptionHolder.put(bugId, summary);
+        } catch (URISyntaxException | IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void save() {
@@ -90,37 +102,6 @@ public class BugFixDescriptionCache {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public boolean load() {
-        Debugify.LOGGER.info("Loading Description Cache");
-
-        if (!Files.exists(file)) {
-            return false;
-        }
-
-        try {
-            String jsonString = Files.readString(file);
-            JsonObject json = gson.fromJson(jsonString, JsonObject.class);
-
-            Map<String, String> loadedDescriptions = json.entrySet().stream()
-                    .map((entry) -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue().getAsString()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-            if (loadedDescriptions.values().stream().anyMatch(desc -> desc.contains("\n"))) {
-                Debugify.LOGGER.warn("Outdated description cache format, re-caching!");
-                cacheDescriptions();
-                return true;
-            }
-
-            descriptionHolder.putAll(loadedDescriptions);
-        } catch (Exception e) {
-            Debugify.LOGGER.error("Couldn't load description cache!");
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
     }
 
     public String get(String id) {

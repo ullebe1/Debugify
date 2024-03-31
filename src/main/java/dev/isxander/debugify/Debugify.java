@@ -5,6 +5,7 @@ import dev.isxander.debugify.fixes.BugFix;
 import dev.isxander.debugify.mixinplugin.DebugifyErrorHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixins;
@@ -14,8 +15,8 @@ import java.util.Map;
 
 public class Debugify {
     public static final Logger LOGGER = LoggerFactory.getLogger("Debugify");
+    public static final Version VERSION = FabricLoader.getInstance().getModContainer("debugify").orElseThrow().getMetadata().getVersion();
     public static final DebugifyConfig CONFIG = new DebugifyConfig();
-    public static boolean configWasDirty = false;
 
     /**
      * Called from mixin plugin to manage
@@ -27,12 +28,6 @@ public class Debugify {
     }
 
     public static void onInitialize() {
-        configWasDirty = !CONFIG.doesJsonHaveIdenticalKeys();
-        if (configWasDirty) {
-            LOGGER.info("Saving config because the loaded bug fixes are different to stored json.");
-            CONFIG.save();
-        }
-
         List<String> enabledBugs = CONFIG.getBugFixes().entrySet()
                 .stream()
                 .filter(Map.Entry::getValue)
