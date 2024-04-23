@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @BugFix(id = "MC-111516", category = FixCategory.BASIC, env = BugFix.Env.CLIENT)
 @Mixin(PlayerRenderer.class)
 public final class PlayerRendererMixin {
-    @ModifyArg(method = "setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V", at = @At(value = "INVOKE", target = "java/lang/Math.acos(D)D"))
+    @ModifyArg(method = "setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFFF)V", at = @At(value = "INVOKE", target = "java/lang/Math.acos(D)D"))
     private double clampAcos(double a) {
         return Math.min(a, 1.0);
     }

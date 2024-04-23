@@ -45,5 +45,8 @@
     "basic.mc93384.LivingEntityMixin",
     "gameplay.mc12829.LivingEntityMixin",
     "gameplay.mc12829.PlayerMixin"
+  ],
+  "mixins": [
+    "basic.mc176559.ItemStackAccessor"
   ]
 }

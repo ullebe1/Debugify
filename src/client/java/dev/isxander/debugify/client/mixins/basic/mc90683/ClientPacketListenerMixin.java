@@ -1,6 +1,6 @@
 package dev.isxander.debugify.client.mixins.basic.mc90683;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import dev.isxander.debugify.fixes.BugFix;
 import dev.isxander.debugify.fixes.FixCategory;
 import net.minecraft.client.multiplayer.ClientPacketListener;

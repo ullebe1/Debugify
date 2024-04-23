@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @BugFix(id = "MC-116379", category = FixCategory.BASIC, env = BugFix.Env.CLIENT)
 @Mixin(FishingHookRenderer.class)
 public class FishingHookRendererMixin {
-    @ModifyVariable(method = "render", at = @At("STORE"), ordinal = 2)
+    @ModifyVariable(method = "render(Lnet/minecraft/world/entity/projectile/FishingHook;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("STORE"), ordinal = 2)
     private float modifyHandSwingProgress(float handSwingProgress, FishingHook bobber) {
         Player player = bobber.getPlayerOwner();
         int j = player.getMainArm() == HumanoidArm.RIGHT ? 1 : -1;

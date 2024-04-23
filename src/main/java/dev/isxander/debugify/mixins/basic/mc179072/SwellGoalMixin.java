@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @BugFix(id = "MC-179072", category = FixCategory.BASIC, env = BugFix.Env.SERVER)
 @Mixin(SwellGoal.class)
-public class SwellMixin {
+public class SwellGoalMixin {
     @Shadow private @Nullable LivingEntity target;
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/sensing/Sensing;hasLineOfSight(Lnet/minecraft/world/entity/Entity;)Z"))

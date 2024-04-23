@@ -1,72 +1,47 @@
 package dev.isxander.debugify.client.mixins.basic.mc176559;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.isxander.debugify.fixes.BugFix;
 import dev.isxander.debugify.fixes.FixCategory;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
-@BugFix(id = "MC-176559", category = FixCategory.BASIC, env = BugFix.Env.CLIENT, modConflicts = "fabric-api")
-@Mixin(MultiPlayerGameMode.class)
+@BugFix(id = "MC-176559", category = FixCategory.BASIC, env = BugFix.Env.CLIENT)
+@Mixin(value = MultiPlayerGameMode.class, priority = 1010)
 public class MultiPlayerGameModeMixin {
-    @Shadow private ItemStack destroyingItem;
-
-    @Shadow @Final private Minecraft minecraft;
-
-    @Redirect(method = "sameDestroyTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
-    private boolean isSameItem(ItemStack itemStack, ItemStack itemStack2) {
-        return !canCauseBlockBreakReset(destroyingItem, minecraft.player.getMainHandItem());
+    // Fabric API also redirects here. WrapOperation is compatible
+    @WrapOperation(method = "sameDestroyTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameComponents(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
+    private boolean isSameItem(ItemStack mainHandItem, ItemStack destroyingItem, Operation<Boolean> original) {
+        return isSameItemSameComponentsIgnoringDurability(mainHandItem, destroyingItem);
     }
 
-    /**
-     * Taken from <a href="https://github.com/MinecraftForge/MinecraftForge/blob/9d74a3520fa9d47db27fed74dcdd462956dd90ec/src/main/java/net/minecraftforge/common/extensions/IForgeItem.java">MinecraftForge</a>
-     * under LGPLv2.1 license
-     * <br>
-     * It has been adapted into a mixin with yarn mappings for use in fabric
-     *
-     * @author BlueAgent
-     */
-    private boolean canCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        try {
-            if (!newStack.is(oldStack.getItem()))
-                return true;
-
-            if (!newStack.isDamageableItem() || !oldStack.isDamageableItem())
-                return !ItemStack.isSameItemSameTags(newStack, oldStack);
-
-            CompoundTag newTag = newStack.getTag();
-            CompoundTag oldTag = oldStack.getTag();
-
-            if (newTag == null || oldTag == null)
-                return !(newTag == null && oldTag == null);
-
-            Set<String> newKeys = new HashSet<>(newTag.getAllKeys());
-            Set<String> oldKeys = new HashSet<>(oldTag.getAllKeys());
-
-            newKeys.remove(ItemStack.TAG_DAMAGE);
-            oldKeys.remove(ItemStack.TAG_DAMAGE);
-
-            if (!newKeys.equals(oldKeys))
-                return true;
-
-            return !newKeys.stream().allMatch(key -> Objects.equals(newTag.get(key), oldTag.get(key)));
-        } catch (Throwable t) {
-            t.printStackTrace();
+    @Unique
+    private boolean isSameItemSameComponentsIgnoringDurability(ItemStack stack1, ItemStack stack2) {
+        if (!stack1.is(stack2.getItem())) {
             return false;
-        }
+        } else if (stack1.isEmpty() && stack2.isEmpty()) {
+            return true;
+        } else {
+            int damage1 = stack1.getDamageValue();
+            int damage2 = stack2.getDamageValue();
+            stack1.setDamageValue(0);
+            stack2.setDamageValue(0);
 
+            PatchedDataComponentMap components1 = ((ItemStackAccessor) (Object) stack1).getComponents();
+            PatchedDataComponentMap components2 = ((ItemStackAccessor) (Object) stack2).getComponents();
+            boolean comparison = Objects.equals(components1, components2);
+
+            stack1.setDamageValue(damage1);
+            stack2.setDamageValue(damage2);
+
+            return comparison;
+        }
     }
 }

@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.At;
 @BugFix(id = "MC-30391", category = FixCategory.BASIC, env = BugFix.Env.SERVER)
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    @ModifyExpressionValue(method = "checkFallDamage", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/Level;isClientSide:Z", ordinal = 1))
-    private boolean shouldntSpawnParticles(boolean isClient) {
+    @ModifyExpressionValue(method = "checkFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isAir()Z"))
+    private boolean shouldntSpawnParticles(boolean isAir) {
         LivingEntity self = (LivingEntity) (Object) this;
-        return isClient || self instanceof Chicken || self instanceof Blaze || self instanceof WitherBoss;
+        return isAir || self instanceof Chicken || self instanceof Blaze || self instanceof WitherBoss;
     }
 }

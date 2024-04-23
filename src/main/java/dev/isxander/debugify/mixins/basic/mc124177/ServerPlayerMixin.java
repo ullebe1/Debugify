@@ -30,7 +30,7 @@ public abstract class ServerPlayerMixin extends Player {
     @Inject(method = "teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDFF)V", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/players/PlayerList;sendAllPlayerInfo(Lnet/minecraft/server/level/ServerPlayer;)V"))
     public void afterCrossDimensionalTeleport(CallbackInfo cb) {
         for (MobEffectInstance eff : getActiveEffects()) {
-            connection.send(new ClientboundUpdateMobEffectPacket(this.getId(), eff));
+            connection.send(new ClientboundUpdateMobEffectPacket(this.getId(), eff, false));
         }
 
         this.connection.send(new ClientboundSetExperiencePacket(experienceProgress, totalExperience, experienceLevel));

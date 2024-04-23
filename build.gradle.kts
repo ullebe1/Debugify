@@ -4,7 +4,7 @@ import ru.vyarus.gradle.plugin.python.task.PythonTask
 plugins {
     java
 
-    id("fabric-loom") version "1.4.+"
+    id("fabric-loom") version "1.6.+"
 
     id("com.modrinth.minotaur") version "2.7.+"
     id("me.hypherionmc.cursegradle") version "2.+"
@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "dev.isxander"
-version = "1.20.4+1.1"
+version = "1.20.5+1.0"
 
 loom {
     splitEnvironmentSourceSets()
@@ -94,7 +94,7 @@ dependencies {
     modImplementation(fabricApi.module("fabric-resource-loader-v0", fabricApiVersion))
     modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
 
-    "modClientImplementation"("dev.isxander.yacl:yet-another-config-lib-fabric:$yaclVersion") { exclude(module = "fabric-loader") }
+    "modClientImplementation"("dev.isxander:yet-another-config-lib:$yaclVersion") { exclude(module = "fabric-loader") }
     "modClientImplementation"("com.terraformersmc:modmenu:$modMenuVersion") { exclude(module = "fabric-loader") }
 
     "gametestImplementation"(sourceSets.main.get().output)
@@ -104,7 +104,7 @@ dependencies {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(17)
+    options.release.set(21)
 }
 
 java {
@@ -177,7 +177,7 @@ if (hasProperty("curseforge.token")) {
             addGameVersion(minecraftVersion)
             addGameVersion("Fabric")
             addGameVersion("Quilt")
-            addGameVersion("Java 17")
+            addGameVersion("Java 21")
 
             relations(closureOf<me.hypherionmc.cursegradle.CurseRelation> {
                 requiredDependency("yacl")
