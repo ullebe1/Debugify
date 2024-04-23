@@ -201,7 +201,6 @@ publishing {
             artifactId = "debugify"
 
             from(components["java"])
-            artifact(tasks["remapSourcesJar"])
         }
     }
 
