@@ -27,14 +27,7 @@ public class DebugifyErrorHandler implements IMixinErrorHandler {
     }
 
     private ErrorAction handleError(ErrorAction usualAction, IMixinInfo mixin) {
-        ClassNode classNode;
-        try {
-            classNode = MixinService.getService().getBytecodeProvider().getClassNode(mixin.getClassName(), false);
-        } catch (ClassNotFoundException | IOException e) {
-            return usualAction;
-        }
-
-        Optional<BugFixData> bugFix = MixinPlugin.getBugFixForMixin(classNode);
+        Optional<BugFixData> bugFix = BugFixDataCache.getIfResolved(mixin.getClassName());
         if (bugFix.isEmpty())
             return usualAction;
 

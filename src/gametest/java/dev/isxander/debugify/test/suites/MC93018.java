@@ -1,4 +1,4 @@
-package dev.isxander.debugify.test;
+package dev.isxander.debugify.test.suites;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.gametest.framework.GameTest;
@@ -9,12 +9,13 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
 
-public class DebugifyMc93018TestSuite implements FabricGameTest {
+public class MC93018 implements FabricGameTest {
 
     @GameTest(template = EMPTY_STRUCTURE)
     public void mc93018(GameTestHelper ctx) {
-        Player player = ctx.makeMockPlayer();
+        Player player = ctx.makeMockPlayer(GameType.SURVIVAL);
         player.setItemInHand(InteractionHand.MAIN_HAND, Items.BONE.getDefaultInstance());
         ctx.getLevel().addFreshEntity(player);
 

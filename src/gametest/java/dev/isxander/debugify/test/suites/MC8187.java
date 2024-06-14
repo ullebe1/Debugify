@@ -1,5 +1,6 @@
-package dev.isxander.debugify.test;
+package dev.isxander.debugify.test.suites;
 
+import dev.isxander.debugify.test.DebugifyTestUtils;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
@@ -16,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
  * @author Ampflower
  * @since 1.20.1+1.2
  **/
-public class DebugifyMc8187TestSuite implements FabricGameTest {
+public class MC8187 implements FabricGameTest {
     private static final String TEMPLATE = "debugify:mc-8187";
 
     // Adjust this if you move the center, as the tests assume this is accurate.

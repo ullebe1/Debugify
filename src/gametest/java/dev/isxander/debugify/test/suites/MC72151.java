@@ -1,4 +1,4 @@
-package dev.isxander.debugify.test;
+package dev.isxander.debugify.test.suites;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.core.BlockPos;
@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.projectile.Snowball;
 
-public class DebugifyMc72151TestSuite implements FabricGameTest {
+public class MC72151 implements FabricGameTest {
     @GameTest(template = EMPTY_STRUCTURE)
     public void mc72151(GameTestHelper ctx) {
         BlockPos wolfPos = new BlockPos(4, 0, 4);
