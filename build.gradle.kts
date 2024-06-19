@@ -6,12 +6,9 @@ plugins {
 
     id("fabric-loom") version "1.7.+"
 
-    id("com.modrinth.minotaur") version "2.7.+"
-    id("me.hypherionmc.cursegradle") version "2.+"
-    id("com.github.breadmoirai.github-release") version "2.+"
+    id("me.modmuss50.mod-publish-plugin") version "0.5.+"
     `maven-publish`
 
-    id("io.github.p03w.machete") version "2.+"
     id("org.ajoberstar.grgit") version "5.0.0"
 
     id("ru.vyarus.use-python") version "3.0.0"
@@ -57,10 +54,6 @@ loom {
     createRemapConfigurations(gametest.get())
 
     accessWidenerPath.set(file("src/main/resources/debugify.accesswidener"))
-}
-
-machete {
-    json.enabled.set(false)
 }
 
 repositories {
@@ -143,54 +136,55 @@ tasks.register<PythonTask>("checkBugStatuses") {
     command = project.file("scripts/check_bug_fixes.py").toString()
 }
 
-var changelogText = file("changelogs/$minecraftVersion/${project.version}.md").takeIf { it.exists() }?.readText()
-    ?: "No changelog is provided"
-file("changelogs/header.md").takeIf { it.exists() }?.readText()?.let { changelogText = it + "\n\n" + changelogText }
+publishMods {
+    displayName.set("Debugify $version")
 
-modrinth {
-    token.set(findProperty("modrinth.token")?.toString())
-    projectId.set("debugify")
-    versionName.set("${project.version} ($minecraftVersion)")
-    versionNumber.set("${project.version}")
-    versionType.set("release")
-    uploadFile.set(tasks["remapJar"])
-    gameVersions.set(listOf(minecraftVersion))
-    loaders.set(listOf("fabric", "quilt"))
-    changelog.set(changelogText)
-    dependencies {
-        required.project("yacl")
-        optional.project("modmenu")
+    file.set(tasks.remapJar.get().archiveFile)
+
+    changelog.set(
+        run {
+            var changelogText = file("changelogs/$minecraftVersion/${project.version}.md").takeIf { it.exists() }?.readText()
+                ?: "No changelog is provided"
+            file("changelogs/header.md").takeIf { it.exists() }?.readText()?.let { changelogText = it + "\n\n" + changelogText }
+            changelogText
+        }
+    )
+    type.set(STABLE)
+    modLoaders.add("fabric")
+
+    val modrinthId: String by project
+    if (modrinthId.isNotBlank() && hasProperty("modrinth.token")) {
+        modrinth {
+            projectId.set(modrinthId)
+            accessToken.set(findProperty("modrinth.token")?.toString())
+            minecraftVersions.addAll(minecraftVersion)
+
+            requires { slug.set("yacl") }
+            requires { slug.set("fabric-api") }
+            optional { slug.set("modmenu") }
+        }
     }
-    syncBodyFrom.set(project.file("README.md").readText())
-}
 
-if (hasProperty("curseforge.token")) {
-    curseforge {
-        apiKey = findProperty("curseforge.token")
-        project(closureOf<me.hypherionmc.cursegradle.CurseProject> {
-            mainArtifact(tasks["remapJar"], closureOf<me.hypherionmc.cursegradle.CurseArtifact> {
-                displayName = "${project.version} ($minecraftVersion)"
-            })
+    val curseforgeId: String by project
+    if (curseforgeId.isNotBlank() && hasProperty("curseforge.token")) {
+        curseforge {
+            projectId.set(curseforgeId)
+            accessToken.set(findProperty("curseforge.token")?.toString())
+            minecraftVersions.addAll(minecraftVersion)
 
-            id = "596224"
-            releaseType = "release"
-            addGameVersion(minecraftVersion)
-            addGameVersion("Fabric")
-            addGameVersion("Quilt")
-            addGameVersion("Java 21")
+            requires { slug.set("yacl") }
+            requires { slug.set("fabric-api") }
+            optional { slug.set("modmenu") }
+        }
+    }
 
-            relations(closureOf<me.hypherionmc.cursegradle.CurseRelation> {
-                requiredDependency("yacl")
-                optionalDependency("modmenu")
-            })
-
-            changelog = changelogText
-            changelogType = "markdown"
-        })
-
-        options(closureOf<me.hypherionmc.cursegradle.Options> {
-            forgeGradleIntegration = false
-        })
+    val githubProject: String by project
+    if (githubProject.isNotBlank() && hasProperty("github.token")) {
+        github {
+            repository.set(githubProject)
+            accessToken.set(findProperty("github.token")?.toString())
+            commitish.set(grgit.branch.current().name)
+        }
     }
 }
 
@@ -218,21 +212,6 @@ publishing {
     }
 }
 
-githubRelease {
-    token(findProperty("github.token")?.toString())
-
-    owner.set("isXander")
-    repo.set("Debugify")
-    tagName.set("${project.version}")
-    targetCommitish.set(grgit.branch.current().name)
-    body.set(changelogText)
-    releaseAssets(tasks["remapJar"].outputs.files)
-}
-
-tasks["githubRelease"].dependsOn("optimizeOutputsOfRemapJar")
-tasks["modrinth"].dependsOn("optimizeOutputsOfRemapJar")
-tasks["generateMetadataFileForDebugifyPublication"].dependsOn("optimizeOutputsOfRemapJar")
-
 tasks.register("publishDebugify") {
     group = "debugify"
 
@@ -240,12 +219,7 @@ tasks.register("publishDebugify") {
 
     dependsOn("clean")
 
-    dependsOn("modrinth")
-    dependsOn("modrinthSyncBody")
-
-    dependsOn("curseforge")
-
-    dependsOn("githubRelease")
+    dependsOn("publishMod")
 
     dependsOn("publish")
 }
