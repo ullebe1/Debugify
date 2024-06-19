@@ -219,7 +219,7 @@ tasks.register("publishDebugify") {
 
     dependsOn("clean")
 
-    dependsOn("publishMod")
+    dependsOn("publishMods")
 
     dependsOn("publish")
 }
