@@ -1,6 +1,5 @@
 package dev.isxander.debugify.fixes;
 
-import dev.isxander.debugify.api.DebugifyApi;
 import dev.isxander.debugify.mixinplugin.DebugifyDebugFlags;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;

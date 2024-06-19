@@ -16,13 +16,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ArmorStandMixin {
     @Shadow protected abstract void showBreakingParticles();
 
-    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/ArmorStand;brokenByAnything(Lnet/minecraft/world/damagesource/DamageSource;)V"))
+    @Inject(
+            method = "hurt",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/decoration/ArmorStand;brokenByAnything(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V",
+                    ordinal = 0
+            )
+    )
     private void breakParticlesExplosion(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         this.showBreakingParticles();
     }
 
-    @Inject(method = "causeDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/ArmorStand;brokenByAnything(Lnet/minecraft/world/damagesource/DamageSource;)V"))
-    private void breakParticlesFire(DamageSource damageSource, float amount, CallbackInfo ci) {
+    @Inject(
+            method = "causeDamage",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/decoration/ArmorStand;brokenByAnything(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V",
+                    ordinal = 0
+            )
+    )
+    private void breakParticlesFire(CallbackInfo ci) {
         this.showBreakingParticles();
     }
 }

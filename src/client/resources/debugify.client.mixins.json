@@ -11,7 +11,7 @@
     "basic.mc105068.LivingEntityMixin",
     "basic.mc108948.BoatMixin",
     "basic.mc111516.PlayerRendererMixin",
-    "basic.mc112730.ChunkRenderDispatcherRenderChunkRebuildTaskMixin",
+    "basic.mc112730.SectionCompilerMixin",
     "basic.mc116379.FishingHookRendererMixin",
     "basic.mc122477.EditBoxMixin",
     "basic.mc122477.RenderSystemMixin",

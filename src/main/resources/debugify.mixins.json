@@ -14,16 +14,13 @@
     "basic.mc119754.FireworkRocketEntityMixin",
     "basic.mc121706.RangedBowAttackGoalMixin",
     "basic.mc121903.MinecraftCommandBlockMixin",
-    "basic.mc124177.ServerPlayerMixin",
     "basic.mc129909.ServerPlayerMixin",
     "basic.mc132878.ArmorStandMixin",
     "basic.mc135971.AbstractContainerMenuMixin",
-    "basic.mc14923.ServerGamePacketListenerImplMixin",
     "basic.mc155509.PufferfishMixin",
     "basic.mc160095.CactusBlockMixin",
     "basic.mc179072.SwellGoalMixin",
     "basic.mc183990.MobMixin",
-    "basic.mc193343.PlayerMixin",
     "basic.mc199467.MthMixin",
     "basic.mc200418.ZombieVillagerMixin",
     "basic.mc2025.EntityMixin",
@@ -40,7 +37,6 @@
     "basic.mc88371.DragonLandingPhaseMixin",
     "basic.mc89146.ChunkAccessMixin",
     "basic.mc93018.AnimalMixin",
-    "gameplay.mc31819.PlayerMixin",
     "gameplay.mc8187.MixinTreeFeature"
   ]
 }

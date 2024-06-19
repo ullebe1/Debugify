@@ -4,8 +4,8 @@
 | Type     | Bug ID                                                | Name                                                                                                                                |
 |----------|-------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
 | Basic    | [MC-577](https://bugs.mojang.com/browse/MC-577)       | Mouse buttons block all inventory controls that are not default                                                                     |
-| Basic    | [MC-4490](https://bugs.mojang.com/browse/MC-4490)     | Fishing line not attached to fishing rod in third person while crouching                                                      |
-| Gameplay | [MC-12829](https://bugs.mojang.com/browse/MC-12829)   | Flying through ladders/vines/scaffolding in creative mode slows you down                                                                  |
+| Basic    | [MC-4490](https://bugs.mojang.com/browse/MC-4490)     | Fishing line not attached to fishing rod in third person while crouching                                                            |
+| Gameplay | [MC-12829](https://bugs.mojang.com/browse/MC-12829)   | Flying through ladders/vines/scaffolding in creative mode slows you down                                                            |
 | Basic    | [MC-22882](https://bugs.mojang.com/browse/MC-22882)   | Ctrl + Q won't work on Mac (disabled by default)                                                                                    |
 | Basic    | [MC-46766](https://bugs.mojang.com/browse/MC-46766)   | Mining a block in Survival, then changing to Spectator creates a breaking animation and sound                                       |
 | Basic    | [MC-55347](https://bugs.mojang.com/browse/MC-55347)   | Title with long duration shows in other world                                                                                       |
@@ -14,7 +14,7 @@
 | Basic    | [MC-80859](https://bugs.mojang.com/browse/MC-80859)   | Starting to drag item stacks over other compatible stacks makes the latter invisible until appearance change (stack size increases) |
 | Basic    | [MC-90683](https://bugs.mojang.com/browse/MC-90683)   | "Received unknown passenger" - Entities with differing render distances as passengers outputs error                                 |
 | Basic    | [MC-93384](https://bugs.mojang.com/browse/MC-93384)   | Bubbles appear at the feet of drowning mobs                                                                                         |
-| Basic    | [MC-105068](https://bugs.mojang.com/browse/MC-105068) | Hitting another player blocking with a shield plays normal hurt sound                                                                                      |
+| Basic    | [MC-105068](https://bugs.mojang.com/browse/MC-105068) | Hitting another player blocking with a shield plays normal hurt sound                                                               |
 | Basic    | [MC-108948](https://bugs.mojang.com/browse/MC-108948) | Boat on top of slime blocks hover over block                                                                                        |
 | Basic    | [MC-111516](https://bugs.mojang.com/browse/MC-111516) | Player flickers/turns invisible when flying at high speeds                                                                          |
 | Basic    | [MC-112730](https://bugs.mojang.com/browse/MC-112730) | Beacon beam and structure block render twice per frame                                                                              |
@@ -40,9 +40,7 @@
 | Basic    | [MC-2025](https://bugs.mojang.com/browse/MC-2025)     | Mobs going out of fenced areas/suffocate in blocks when loading chunks                                                                         |
 | Basic    | [MC-7569](https://bugs.mojang.com/browse/MC-7569)     | RCON output has newlines removed                                                                                                               |
 | Gameplay | [MC-8187](https://bugs.mojang.com/browse/MC-8187)     | Two-by-two arrangements of jungle or spruce saplings cannot grow when there are adjacent blocks located north or west of the sapling formation |
-| Basic    | [MC-14923](https://bugs.mojang.com/browse/MC-14923)   | Players can be kicked for spamming in a singleplayer world with cheats disabled                                                                |
 | Basic    | [MC-30391](https://bugs.mojang.com/browse/MC-30391)   | Chickens, blazes and the wither emit particles when landing from a height, despite falling slowly                                              |
-| Gameplay | [MC-31819](https://bugs.mojang.com/browse/MC-31819)   | Hunger saturation depletes on Peaceful                                                                                                         |
 | Basic    | [MC-69216](https://bugs.mojang.com/browse/MC-69216)   | Switching to spectator mode while fishing keeps rod cast                                                                                       |
 | Basic    | [MC-81773](https://bugs.mojang.com/browse/MC-81773)   | Bows and tridents drawn in survival/creative/adventure mode can be released in spectator mode                                                  |
 | Basic    | [MC-88371](https://bugs.mojang.com/browse/MC-88371)   | Ender Dragon flies down in the void when the exit portal is destroyed                                                                          |
@@ -53,7 +51,6 @@
 | Basic    | [MC-119754](https://bugs.mojang.com/browse/MC-119754) | Firework boosting on elytra continues in spectator mode                                                                                        |
 | Basic    | [MC-121706](https://bugs.mojang.com/browse/MC-121706) | Skeletons and illusioners aren't looking up / down at their target while strafing                                                              |
 | Basic    | [MC-121903](https://bugs.mojang.com/browse/MC-121903) | Command block minecarts do not save execution cooldown to NBT                                                                                  |
-| Basic    | [MC-124177](https://bugs.mojang.com/browse/MC-124177) | Teleporting to another dimension loses some client states                                                                                      |
 | Basic    | [MC-129909](https://bugs.mojang.com/browse/MC-129909) | Players in spectator mode continue to consume foods and liquids shortly after switching game modes                                             |
 | Basic    | [MC-132878](https://bugs.mojang.com/browse/MC-132878) | Armor stands destroyed by explosions/lava/fire don't produce particles                                                                         |
 | Basic    | [MC-135971](https://bugs.mojang.com/browse/MC-135971) | Can't use CTRL+Q in crafting table                                                                                                             |
@@ -61,7 +58,6 @@
 | Basic    | [MC-160095](https://bugs.mojang.com/browse/MC-160095) | End Rods only break Cactus when moved by pistons                                                                                               |
 | Basic    | [MC-179072](https://bugs.mojang.com/browse/MC-179072) | Creepers do not defuse when switching from Survival to Creative/Spectator                                                                      |
 | Basic    | [MC-183990](https://bugs.mojang.com/browse/MC-183990) | Group AI of some mobs breaks when their target dies                                                                                            |
-| Basic    | [MC-193343](https://bugs.mojang.com/browse/MC-193343) | Soul Speed effect remains after switching to spectator mode                                                                                    |
 | Basic    | [MC-199467](https://bugs.mojang.com/browse/MC-199467) | Certain entity animations stop after they've existed in world for too long                                                                     |
 | Basic    | [MC-200418](https://bugs.mojang.com/browse/MC-200418) | Cured baby zombie villagers stay as jockey variant                                                                                             |
 | Basic    | [MC-214147](https://bugs.mojang.com/browse/MC-214147) | Skeletons wearing leather armor still convert to strays in powder snow                                                                         |
@@ -97,4 +93,8 @@ Bugs that this mod has patched but has been superseded by a vanilla update.
 | [MC-140646](https://bugs.mojang.com/browse/MC-140646) | Text fields don't scroll while selecting text with Shift                                                        | 23w31a      |
 | [MC-90084](https://bugs.mojang.com/browse/MC-90084)   | When sitting in boats and boats with chest mobs legs penetrate the hull                                         | 23w31a      |
 | [MC-72151](https://bugs.mojang.com/browse/MC-72151)   | Snow Golem's snowballs damage wolves instead of pushing them                                                    | 24w06a      |
+| [MC-193343](https://bugs.mojang.com/browse/MC-193343) | Soul Speed effect remains after switching to spectator mode                                                      | 24w18a      |
+| [MC-14923](https://bugs.mojang.com/browse/MC-14923)   | Players can be kicked for spamming in a singleplayer world with cheats disabled                                 | 24w19a      |
+| [MC-124177](https://bugs.mojang.com/browse/MC-124177) | Teleporting to another dimension loses some client states                                                        | 24w20a      |
+| [MC-31819](https://bugs.mojang.com/browse/MC-31819)   | Hunger saturation depletes on Peaceful                                                                           | 24w21a      |
 
