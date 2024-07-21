@@ -76,6 +76,7 @@ tasks {
 
         configurations = listOf(shadowCommon)
         archiveClassifier.set("dev-shadow")
+        mergeServiceFiles()
     }
 
     remapJar {
